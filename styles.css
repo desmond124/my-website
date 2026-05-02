@@ -273,6 +273,16 @@ html, body {
 }
 .card:hover .card-image img { transform: scale(1.06); }
 
+.slot-card .card-image {
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(135deg, #1a1a22 0%, #0f0f15 100%);
+}
+.slot-card .card-image img {
+  object-fit: contain;
+  padding: 8px;
+}
+.slot-card:hover .card-image img { transform: scale(1.04); }
+
 .card-image img.img-fail { display: none; }
 .card[data-initial] .card-image::before {
   content: attr(data-initial);
