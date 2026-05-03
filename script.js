@@ -37,6 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Safety net: if anime.js failed to load or animations didn't fire,
+  // make sure key text remains visible after a generous delay.
+  setTimeout(() => {
+    document.querySelectorAll('.hero-title .char, .hero-sub, .about-text .word, .card')
+      .forEach(el => {
+        if (getComputedStyle(el).opacity === '0') el.style.opacity = '1';
+      });
+  }, 3500);
+
   // ---------- 1. Hero entrance (timeline) ----------
   const heroTitle = document.querySelector('.hero-title');
   splitChars(heroTitle);
@@ -55,6 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 1100,
       delay: anime.stagger(55, { start: 200 }),
       easing: 'easeOutElastic(1, .7)',
+      complete: () => {
+        document.querySelectorAll('.hero-title .char').forEach(c => {
+          c.style.opacity = '1';
+        });
+      },
     })
     .add({
       targets: '.hero-sub',
@@ -174,8 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Slot reel-spin: each image drops in like a slot reel landing.
-    if (!prefersReduced && section.classList.contains('slot-games-section')) {
+    // Reel-spin: each game image drops in like a slot reel landing.
+    if (!prefersReduced && section.classList.contains('games-section')) {
       anime({
         targets: section.querySelectorAll('.card-image img'),
         translateY: ['-300%', '0%'],
@@ -324,9 +338,9 @@ document.addEventListener('DOMContentLoaded', () => {
     tick();
   }
 
-  // ---------- 8. Scroll-driven tilt + parallax for slot cards ----------
+  // ---------- 8. Scroll-driven tilt + parallax for cards ----------
   if (!prefersReduced) {
-    const slotImgs = Array.from(document.querySelectorAll('.slot-card .card-image'));
+    const slotImgs = Array.from(document.querySelectorAll('.tilt-card .card-image'));
     let lastY = window.scrollY;
     let velocity = 0;
     let pending = null;
