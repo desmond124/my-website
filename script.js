@@ -35,6 +35,8 @@ function splitWords(el) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // ---------- 1. Hero entrance (timeline) ----------
   const heroTitle = document.querySelector('.hero-title');
   splitChars(heroTitle);
@@ -171,6 +173,17 @@ document.addEventListener('DOMContentLoaded', () => {
         easing: 'easeOutCubic',
       });
     }
+
+    // Slot reel-spin: each image drops in like a slot reel landing.
+    if (!prefersReduced && section.classList.contains('slot-games-section')) {
+      anime({
+        targets: section.querySelectorAll('.card-image img'),
+        translateY: ['-300%', '0%'],
+        duration: 1300,
+        delay: anime.stagger(200, { start: 500 }),
+        easing: 'easeOutBounce',
+      });
+    }
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -220,7 +233,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---------- 5. Cursor glow follow ----------
+  // ---------- 5. Magnetic "View Project" buttons ----------
+  if (!prefersReduced) {
+    document.querySelectorAll('.card a').forEach(btn => {
+      const card = btn.closest('.card');
+      let raf = null;
+      const radius = 160;
+      const pull = 0.3;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        const dist = Math.hypot(dx, dy);
+
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          if (dist < radius) {
+            btn.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
+          } else {
+            btn.style.transform = '';
+          }
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        anime.remove(btn);
+        anime({
+          targets: btn,
+          translateX: 0,
+          translateY: 0,
+          duration: 600,
+          easing: 'spring(1, 80, 10, 0)',
+        });
+      });
+    });
+  }
+
+  // ---------- 6. Gold sparkle burst on link click ----------
+  document.querySelectorAll('.card a').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      if (prefersReduced) return;
+      const burst = document.createElement('span');
+      burst.className = 'sparkle-burst';
+      burst.style.left = e.clientX + 'px';
+      burst.style.top = e.clientY + 'px';
+      document.body.appendChild(burst);
+
+      const dots = [];
+      for (let i = 0; i < 12; i++) {
+        const d = document.createElement('span');
+        d.className = 'sparkle-dot';
+        burst.appendChild(d);
+        dots.push(d);
+      }
+
+      anime({
+        targets: dots,
+        translateX: () => anime.random(-80, 80),
+        translateY: () => anime.random(-80, 80),
+        scale: [1, 0],
+        opacity: [1, 0],
+        duration: 750,
+        easing: 'easeOutCubic',
+        complete: () => burst.remove(),
+      });
+    });
+  });
+
+  // ---------- 7. Cursor glow follow ----------
   const glow = document.querySelector('.cursor-glow');
   if (glow && window.matchMedia('(hover: hover)').matches) {
     let mouseX = 0, mouseY = 0;
@@ -241,6 +322,48 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(tick);
     };
     tick();
+  }
+
+  // ---------- 8. Scroll-driven tilt + parallax for slot cards ----------
+  if (!prefersReduced) {
+    const slotImgs = Array.from(document.querySelectorAll('.slot-card .card-image'));
+    let lastY = window.scrollY;
+    let velocity = 0;
+    let pending = null;
+
+    const applyTilt = () => {
+      pending = null;
+      const vh = window.innerHeight;
+      velocity *= 0.85;
+
+      slotImgs.forEach(wrap => {
+        const rect = wrap.getBoundingClientRect();
+        if (rect.bottom < -100 || rect.top > vh + 100) return;
+
+        // Position: -1 near bottom of viewport, 0 at center, 1 near top.
+        const progress = Math.max(-1, Math.min(1,
+          (rect.top + rect.height / 2 - vh / 2) / (vh / 2)
+        ));
+        const baseTilt = -progress * 5;       // tilt from viewport position
+        const velTilt = velocity * 0.12;      // direction-aware velocity boost
+        const ty = -progress * 10;            // parallax offset
+        wrap.style.transform =
+          `perspective(700px) rotateX(${baseTilt + velTilt}deg) translateY(${ty}px)`;
+      });
+
+      if (Math.abs(velocity) > 0.1) {
+        pending = requestAnimationFrame(applyTilt);
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      velocity = y - lastY;
+      lastY = y;
+      if (!pending) pending = requestAnimationFrame(applyTilt);
+    }, { passive: true });
+
+    applyTilt();
   }
 
 });
