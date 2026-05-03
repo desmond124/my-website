@@ -319,7 +319,8 @@ html, body {
   background: rgba(255, 215, 0, 0.08);
   border: 1px solid rgba(255, 215, 0, 0.2);
   border-radius: 10px;
-  transition: background 0.3s, transform 0.25s;
+  transition: background 0.3s;
+  will-change: transform;
 }
 .card a:hover {
   background: rgba(255, 215, 0, 0.18);
@@ -329,6 +330,24 @@ html, body {
   display: inline-block;
 }
 .card a:hover .arrow { transform: translateX(4px); }
+
+/* ---------- sparkle burst ---------- */
+.sparkle-burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 0;
+  height: 0;
+}
+.sparkle-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold), 0 0 16px rgba(255, 215, 0, 0.6);
+}
 
 /* ---------- footer ---------- */
 footer {
@@ -348,6 +367,7 @@ footer {
 .js .reveal .section-title { opacity: 0; transform: translateY(30px) translateX(-50%); }
 .js .about-text .word { opacity: 0; }
 .js .card { opacity: 0; transform: translateY(40px) scale(0.95); }
+.js .slot-games-section .card-image img { transform: translateY(-300%); }
 
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -357,5 +377,6 @@ footer {
   .js .reveal .section-title,
   .js .about-text .word,
   .js .card { opacity: 1 !important; transform: none !important; }
+  .js .slot-games-section .card-image img { transform: none !important; }
   .hero-underline path { stroke-dashoffset: 0 !important; }
 }
