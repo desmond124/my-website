@@ -89,12 +89,19 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 600,
     }, '-=600');
 
-  // Subtle continuous shimmer on the gradient title.
+  // Continuous gold color/glow wave sweeping across the title letters.
   anime({
-    targets: '.hero-title',
-    backgroundPositionX: ['0%', '200%'],
-    duration: 6000,
-    easing: 'linear',
+    targets: '.hero-title .char',
+    color: ['#ffffff', '#ffd700'],
+    textShadow: [
+      '0 0 0px rgba(255, 215, 0, 0)',
+      '0 0 20px rgba(255, 215, 0, 0.75)',
+    ],
+    translateY: [0, -6],
+    duration: 1400,
+    delay: anime.stagger(90, { from: 'first' }),
+    direction: 'alternate',
+    easing: 'easeInOutSine',
     loop: true,
   });
 
