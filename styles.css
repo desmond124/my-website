@@ -273,15 +273,15 @@ html, body {
 }
 .card:hover .card-image img { transform: scale(1.06); }
 
-.slot-card .card-image {
+.tilt-card .card-image {
   aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, #1a1a22 0%, #0f0f15 100%);
 }
-.slot-card .card-image img {
+.tilt-card .card-image img {
   object-fit: contain;
   padding: 8px;
 }
-.slot-card:hover .card-image img { transform: scale(1.04); }
+.tilt-card:hover .card-image img { transform: scale(1.04); }
 
 .card-image img.img-fail { display: none; }
 .card[data-initial] .card-image::before {
@@ -331,6 +331,16 @@ html, body {
 }
 .card a:hover .arrow { transform: translateX(4px); }
 
+/* ---------- scroll-up pulse ---------- */
+.tilt-card .card-image.pulse-up {
+  animation: pulseUp 700ms ease-out;
+}
+@keyframes pulseUp {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); filter: brightness(1); }
+  35%  { box-shadow: 0 0 36px 6px rgba(255, 215, 0, 0.45); filter: brightness(1.18); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); filter: brightness(1); }
+}
+
 /* ---------- sparkle burst ---------- */
 .sparkle-burst {
   position: fixed;
@@ -367,7 +377,7 @@ footer {
 .js .reveal .section-title { opacity: 0; transform: translateY(30px) translateX(-50%); }
 .js .about-text .word { opacity: 0; }
 .js .card { opacity: 0; transform: translateY(40px) scale(0.95); }
-.js .slot-games-section .card-image img { transform: translateY(-300%); }
+.js .games-section .card-image img { transform: translateY(-300%); }
 
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -377,6 +387,6 @@ footer {
   .js .reveal .section-title,
   .js .about-text .word,
   .js .card { opacity: 1 !important; transform: none !important; }
-  .js .slot-games-section .card-image img { transform: none !important; }
+  .js .games-section .card-image img { transform: none !important; }
   .hero-underline path { stroke-dashoffset: 0 !important; }
 }
