@@ -106,8 +106,12 @@ html, body {
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   display: inline-block;
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-title { color: var(--gold); -webkit-text-fill-color: var(--gold); background: none; }
 }
 .hero-title .char {
   display: inline-block;
