@@ -1,0 +1,32 @@
+import { About } from './components/About';
+import { Contact } from './components/Contact';
+import { Education } from './components/Education';
+import { Experience } from './components/Experience';
+import { Hero } from './components/Hero';
+import { Nav } from './components/Nav';
+import { Skills } from './components/Skills';
+import { Work } from './components/Work';
+import { resume } from './data/resume';
+
+export default function App() {
+  return (
+    <>
+      <a className="skip" href="#main">
+        Skip to content
+      </a>
+      <Nav />
+      <Hero />
+      <main id="main">
+        <About />
+        <Experience />
+        <Work />
+        <Skills />
+        <Education />
+        <Contact />
+      </main>
+      <footer className="footer">
+        <div className="wrap">© {new Date().getFullYear()} {resume.name}</div>
+      </footer>
+    </>
+  );
+}
